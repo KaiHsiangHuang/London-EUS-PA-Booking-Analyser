@@ -199,13 +199,13 @@ class StatisticalPredictor:
 
 def create_interactive_app():
     """Create Streamlit interactive application."""
-    st.set_page_config(page_title="Booking Curve Analyzer", layout="wide")
+    st.set_page_config(page_title="Booking Curve Analyser", layout="wide")
     
-    st.title("🚂 Railway Booking Curve Analyzer")
+    st.title("🚂 Railway Booking Curve Analyser")
     st.markdown("Analyze current pre-booking status and predict final passenger numbers")
     
     # Initialize analyzer
-    analyzer = BookingCurveAnalyser()
+    analyser = BookingCurveAnalyser()
     
     # User inputs
     col1, col2, col3 = st.columns(3)
@@ -235,9 +235,9 @@ def create_interactive_app():
         )
     
     # Analyze button
-    if st.button("🔍 Analyze Booking Status", type="primary"):
+    if st.button("🔍 Analyse Booking Status", type="primary"):
         # Perform analysis
-        results = analyzer.analyze_current_booking(
+        results = analyzer.analyse_current_booking(
             departure_date, 
             current_bookings, 
             days_before_departure
@@ -320,7 +320,7 @@ def create_interactive_app():
         ax1.set_ylim(0, 105)
         
         # Right plot: Projected booking accumulation
-        predictions = analyzer.predict_booking_curve(
+        predictions = analyser.predict_booking_curve(
             current_bookings, 
             days_before_departure, 
             pattern
