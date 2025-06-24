@@ -14,7 +14,7 @@ warnings.filterwarnings('ignore')
 
 class BookingCurveAnalyzer:
     """
-    Analyses and predicts booking curves based on actual cumulative patterns.
+    Analyzes and predicts booking curves based on actual cumulative patterns.
     Uses multiple models and selects the best performer.
     """
     
@@ -38,7 +38,7 @@ class BookingCurveAnalyzer:
             0: 100   # Day of departure
         }
         
-        # Day-specific patterns (can be customised based on your data)
+        # Day-specific patterns (can be customized based on your data)
         self.day_patterns = {
             'Monday': {14: 2, 13: 4, 12: 6, 11: 9, 10: 12, 9: 16, 8: 20, 7: 24, 6: 28, 5: 33, 4: 38, 3: 44, 2: 50, 1: 59, 0: 100},
             'Tuesday': {14: 2, 13: 4, 12: 7, 11: 10, 10: 13, 9: 17, 8: 21, 7: 25, 6: 29, 5: 34, 4: 39, 3: 45, 2: 51, 1: 60, 0: 100},
@@ -61,7 +61,7 @@ class BookingCurveAnalyzer:
     
     def analyze_current_booking(self, departure_date, current_bookings, days_before_departure):
         """
-        Analyse current booking status and predict final numbers.
+        Analyze current booking status and predict final numbers.
         """
         day_name = departure_date.strftime('%A')
         
@@ -75,7 +75,7 @@ class BookingCurveAnalyzer:
         else:
             projected_total = current_bookings
         
-        # Analyse deviation
+        # Analyze deviation
         results = {
             'departure_date': departure_date,
             'day_of_week': day_name,
@@ -199,12 +199,12 @@ class StatisticalPredictor:
 
 def create_interactive_app():
     """Create Streamlit interactive application."""
-    st.set_page_config(page_title="Booking Curve Analyser", layout="wide")
+    st.set_page_config(page_title="Booking Curve Analyzer", layout="wide")
     
-    st.title("🚂 London EUS PA Booking Curve Analyser")
-    st.markdown("Analyse current pre-booking status and forecast final passenger numbers")
+    st.title("🚂 Railway Booking Curve Analyzer")
+    st.markdown("Analyze current pre-booking status and predict final passenger numbers")
     
-    # Initialise analyser
+    # Initialize analyzer
     analyzer = BookingCurveAnalyzer()
     
     # User inputs
@@ -234,8 +234,8 @@ def create_interactive_app():
             step=10
         )
     
-    # Analyse button
-    if st.button("🔍 Analyse Booking Status", type="primary"):
+    # Analyze button
+    if st.button("🔍 Analyze Booking Status", type="primary"):
         # Perform analysis
         results = analyzer.analyze_current_booking(
             departure_date, 
@@ -266,23 +266,23 @@ def create_interactive_app():
         
         with col3:
             st.metric(
-                "Forecast Total",
+                "Projected Total",
                 f"{results['projected_total']:,}",
                 delta=f"{results['projected_total'] - current_bookings:+,} to go"
             )
         
         with col4:
-            status_colour = "🟢" if results.get('is_normal', True) else "🔴"
+            status_color = "🟢" if results.get('is_normal', True) else "🔴"
             status_text = "Normal" if results.get('is_normal', True) else "Abnormal"
             st.metric(
                 "Booking Status",
-                f"{status_colour} {status_text}",
+                f"{status_color} {status_text}",
                 delta=f"{results.get('deviation', 0):+.1f}% vs expected"
             )
         
         # Confidence interval
         st.markdown("---")
-        st.subheader("📊 Forecast Confidence Range")
+        st.subheader("📊 Prediction Confidence Range")
         
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -292,7 +292,7 @@ def create_interactive_app():
         with col3:
             st.info(f"**Upper Bound:** {results.get('confidence_upper', 0):,} passengers")
         
-        # Booking curve visualisation
+        # Booking curve visualization
         st.markdown("---")
         st.subheader("📈 Booking Curve Analysis")
         
@@ -305,11 +305,11 @@ def create_interactive_app():
         percentages = [pattern[d] for d in days]
         
         ax1.plot(days, percentages, 'b-', linewidth=2, label='Expected Curve')
-        ax1.axvline(x=days_before_departure, colour='red', linestyle='--', alpha=0.7, label='Today')
+        ax1.axvline(x=days_before_departure, color='red', linestyle='--', alpha=0.7, label='Today')
         
         # Mark current position
         current_pct = (current_bookings / results['projected_total']) * 100
-        ax1.scatter([days_before_departure], [current_pct], colour='red', s=200, zorder=5, label='Current Status')
+        ax1.scatter([days_before_departure], [current_pct], color='red', s=200, zorder=5, label='Current Status')
         
         ax1.set_xlabel('Days Before Departure')
         ax1.set_ylabel('Cumulative Bookings (%)')
@@ -319,7 +319,7 @@ def create_interactive_app():
         ax1.set_xlim(14, -1)
         ax1.set_ylim(0, 105)
         
-        # Right plot: Forecast booking accumulation
+        # Right plot: Projected booking accumulation
         predictions = analyzer.predict_booking_curve(
             current_bookings, 
             days_before_departure, 
@@ -330,18 +330,18 @@ def create_interactive_app():
             pred_days = sorted(predictions.keys(), reverse=True)
             pred_values = [predictions[d] for d in pred_days]
             
-            ax2.plot(pred_days, pred_values, 'g-', linewidth=2, label='Forecast Bookings')
-            ax2.axvline(x=days_before_departure, colour='red', linestyle='--', alpha=0.7, label='Today')
-            ax2.scatter([days_before_departure], [current_bookings], colour='red', s=200, zorder=5)
+            ax2.plot(pred_days, pred_values, 'g-', linewidth=2, label='Projected Bookings')
+            ax2.axvline(x=days_before_departure, color='red', linestyle='--', alpha=0.7, label='Today')
+            ax2.scatter([days_before_departure], [current_bookings], color='red', s=200, zorder=5)
             
             # Add confidence bands
             upper_values = [v * 1.1 for v in pred_values]
             lower_values = [v * 0.9 for v in pred_values]
-            ax2.fill_between(pred_days, lower_values, upper_values, alpha=0.2, colour='green', label='90% Confidence')
+            ax2.fill_between(pred_days, lower_values, upper_values, alpha=0.2, color='green', label='90% Confidence')
             
             ax2.set_xlabel('Days Before Departure')
             ax2.set_ylabel('Total Bookings')
-            ax2.set_title('Forecast Booking Accumulation')
+            ax2.set_title('Projected Booking Accumulation')
             ax2.grid(True, alpha=0.3)
             ax2.legend()
             ax2.set_xlim(14, -1)
@@ -350,7 +350,7 @@ def create_interactive_app():
         
         # Daily breakdown table
         st.markdown("---")
-        st.subheader("📋 Day-by-Day Forecast")
+        st.subheader("📋 Day-by-Day Projection")
         
         if predictions:
             breakdown_data = []
@@ -360,7 +360,7 @@ def create_interactive_app():
                         'Days Before Departure': day,
                         'Day Label': f"Day {14-day}" if day > 0 else "Departure Day",
                         'Expected Cumulative %': f"{pattern.get(day, 0)}%",
-                        'Forecast Bookings': f"{predictions[day]:,}",
+                        'Projected Bookings': f"{predictions[day]:,}",
                         'Bookings to Add': f"{predictions[day] - (predictions.get(day+1, current_bookings) if day < days_before_departure else current_bookings):+,}"
                     })
             
@@ -391,7 +391,7 @@ def create_interactive_app():
             # Display comparison
             model_df = pd.DataFrame({
                 'Model': model_results.keys(),
-                'Forecast': model_results.values(),
+                'Prediction': model_results.values(),
                 'Deviation from Primary': [f"{(v/results['projected_total']-1)*100:+.1f}%" for v in model_results.values()]
             })
             
