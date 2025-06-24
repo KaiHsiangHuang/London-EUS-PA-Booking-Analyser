@@ -14,7 +14,7 @@ warnings.filterwarnings('ignore')
 
 class BookingCurveAnalyzer:
     """
-    Analyzes and predicts booking curves based on actual cumulative patterns.
+    Analyses and predicts booking curves based on actual cumulative patterns.
     Uses multiple models and selects the best performer.
     """
     
@@ -59,9 +59,9 @@ class BookingCurveAnalyzer:
         
         self.best_model = None
     
-    def analyze_current_booking(self, departure_date, current_bookings, days_before_departure):
+    def analyse_current_booking(self, departure_date, current_bookings, days_before_departure):
         """
-        Analyze current booking status and predict final numbers.
+        Analyse current booking status and predict final numbers.
         """
         day_name = departure_date.strftime('%A')
         
@@ -205,7 +205,7 @@ def create_interactive_app():
     st.markdown("Analyze current pre-booking status and predict final passenger numbers")
     
     # Initialize analyzer
-    analyzer = BookingCurveAnalyzer()
+    analyzer = BookingCurveAnalyser()
     
     # User inputs
     col1, col2, col3 = st.columns(3)
